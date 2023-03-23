@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .order {
+            width: 1300px;
+            height: 500px;
+            margin-left: 0px;
+            margin-top: 15px;
+        }
+
+        .order table th {
+            color: #404040;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        .order table td {
+            width: 250px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="order">
+        <el-table size="middle" current-row-key="id" :data="dataList" stripe highlight-current-row border>
+            <el-table-column align="center" label="商品图片">
+                <template slot-scope="scope">
+                    　　　　<img :src="'/upload/'+scope.row.pimg" width="80" height="80" class="head_pic"/>
+                    　　
+                </template>
+            </el-table-column>
+            <el-table-column prop="orderId" label="订单编号" align="center"></el-table-column>
+            <el-table-column prop="ptitle" label="商品名称" align="center"></el-table-column>
+            <el-table-column prop="price" label="单价" align="center"></el-table-column>
+            <el-table-column prop="status" label="订单状态" align="center"></el-table-column>
+            <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="success" size="mini" @click="handleSend(scope.row)" v-if="scope.row.status=='待发货'">发货</el-button>
+                    <el-button  size="mini" @click="handleUserInfo(scope.row)">收件人信息</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="pagination-container">
+            <el-pagination
+                    class="pagiantion"
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.currentPage"
+                    :page-size="pagination.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="pagination.total">
+            </el-pagination>
+        </div>
+    </div>
+    <el-dialog
+            title="收件人信息"
+            :visible.sync="dialogFormVisibleUser">
+        <form :model="formDataUser" class="detail">
+            <p> <span>收件人姓名：</span>{{formDataUser.receiveName}}</p>
+            <p> <span>收货地址：</span>{{formDataUser.detailAddress}}</p>
+            <p> <span>联系电话：</span>{{formDataUser.phone}}</p>
+        </form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisibleUser= false">关闭</el-button>
+        </div>
+    </el-dialog>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            pagination: {//分页相关模型数据
+                currentPage: 1,//当前页码
+                pageSize: 4,//每页显示的记录数
+                total: 0,//总记录数
+                queryString: null//查询条件
+            },
+            imgUrl: null,
+            dataList: [],//当前页要展示的分页列表数据
+            formData: {},//表单数据
+            dialogFormVisibleUser: false,
+            orderImgUrl: null,
+            formDataUser: {}
+        },
+        created() {
+            this.findPage();
+        },
+        methods: {
+            findPage() {
+                var param = {
+                    currentPage: this.pagination.currentPage,
+                    pageSize: this.pagination.pageSize,
+                    queryString: this.pagination.queryString
+                };
+
+                //发送ajax请求，进行分页查询
+                axios.post("/business/findAllOrder", param).then((res) => {
+                    this.pagination.total = res.data.total;
+                    this.dataList = res.data.rows;
+                    this.imgUrl = '/upload/' + this.dataList.pimg;
+                });
+
+            },
+            //切换页码
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
+            },
+            handleUserInfo(row){
+                axios.post("/business/findUserById/"+row.userId).then((res)=>{
+                    if(res.data.flag){
+                        this.formDataUser=res.data.data;
+                        this.dialogFormVisibleUser=true;
+                    }
+                })
+            },
+            handleSend(row){
+                axios.post("/business/sendProduct/"+row.id).then((res)=>{
+                    if(res.data.flag){
+                        this.$message.success(res.data.message);
+                        this.findPage();
+                    }else{
+                        this.$message.error(res.data.message);
+                    }
+                })
+            }
+
+        }
+    })
+</script>
+</html>

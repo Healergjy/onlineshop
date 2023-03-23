@@ -1,0 +1,52 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gjy.mapper.BusinessMapper">
+    <select id="findBusiness" resultType="Business" parameterType="String">
+        select * from business where username=#{username} and password=#{password}
+    </select>
+    <insert id="addBusiness" parameterType="Business">
+        insert into business(username, password,email)values (#{username},#{password},#{email})
+    </insert>
+    <select id="findByBusiness" resultType="Business" parameterType="String">
+        select * from business where username=#{username} and password=#{password}
+    </select>
+    <insert id="addShopSetting" parameterType="int">
+        insert into shop_setting(business_id)values (#{id})
+    </insert>
+    <insert id="addShopRotation" parameterType="int">
+        insert into shop_rotation(business_id)values (#{id})
+    </insert>
+    <select id="findBusinessById" resultType="Business" parameterType="int">
+        select * from business where id=#{id}
+    </select>
+    <update id="editPersonInfo" parameterType="Business">
+        update business
+        <set>
+         <if test="username!=null">
+             username=#{username},
+         </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="money!=null">
+                money=#{money},
+            </if>
+            <if test="userImg!=null">
+                user_img=#{userImg},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <update id="editBusinessMoney" parameterType="map">
+        update business set money=money+#{price} where id=#{businessId}
+    </update>
+
+</mapper>

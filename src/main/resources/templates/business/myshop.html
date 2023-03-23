@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <!-- 引入bootstrap-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            width: 1100px;
+            height: 70px;
+            margin-left: 100px;
+            border: 1px solid #edeeef;
+            border-radius: 15px;
+            display: flex;
+        }
+
+        .header p {
+            font-size: 16px;
+        }
+
+        .header img {
+            width: 70px;
+            height: 70px;
+        }
+
+        .header-left {
+            width: 300px;
+            height: 70px;
+            margin-left: 25px;
+        }
+
+        .header input {
+            width: 300px;
+            height: 38px;
+            font-size: 14px;
+            margin-top: 14px;
+            margin-left: 450px;
+            border-radius: 5px;
+            border: 1px solid #409eff;
+        }
+
+        .header input:focus {
+            outline: #409eff;
+            caret-color: #8c939d;
+        }
+
+        .banner {
+            width: 1100px;
+            height: 380px;
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+
+        .banner img {
+            width: 1100px;
+            height: 380px;
+            background-color: #ffffff;
+        }
+
+        .product {
+            width: 1100px;
+            height: 650px;
+            margin-top: 20px;
+            margin-left: 100px;
+            background-color: #f7fafc;
+        }
+
+        .product form {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            float: left;
+            width: 225px;
+            height: 245px;
+            margin-left: 40px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #ffffff;
+            border-radius: 7px;
+            background-color: #ffffff;
+        }
+        .product form:hover{
+            border-color: #ff5c00;
+        }
+
+        .product form img {
+            width: 150px;
+            height: 150px;
+            margin-left: 35px;
+            margin-top: 10px;
+            background-color: #ffffff;
+        }
+
+        .product p {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+            word-break: break-all;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #1a1a1a;
+            background-color: #ffffff;
+        }
+
+        .product span {
+            color: #cf0a2c;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .pagination-container {
+            float: right;
+        }
+
+        .el-pagination button, .el-pagination span:not([class*=suffix]) {
+            display: inline-block;
+            min-width: 35.5px;
+            height: 28px;
+            line-height: 28px;
+            vertical-align: top;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            color: black;
+            font-size: 14px;
+        }
+        .el-form {
+            width: 200px;
+            height: 500px;
+        }
+
+        .detail {
+            display: flex;
+        }
+
+        .detail-left {
+            float: left;
+        }
+
+        .detail-left img {
+            width: 325px;
+            height: 325px;
+        }
+
+        .detail-right {
+            float: left;
+            margin-left: 20px;
+        }
+
+        .title {
+            font-size: 18px;
+            color: #000000;
+        }
+        .detail-right p{
+            color: #000000;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="header">
+        <img :src="'/upload/'+formData.shopLogo">
+        <div class="header-left">
+            <p style="margin-top: 10px;width: 170px;">{{formData.shopName}}</p>
+            <div style="width: 170px;margin-top: -15px;">
+                <span style=" font-size: 14px;color: #c1c1c1;">开店时间:</span><span
+                    style=" font-size: 14px;color: #c1c1c1;">{{formData2.createTime}}</span>
+            </div>
+        </div>
+        <input type="text" placeholder="请输入商品名称" v-model="pagination.queryString">
+        <el-button type="primary" @click="findPage()"
+                   style="width: 80px;height: 38px;margin-right: 80px;margin-top: 13px;">
+            搜索
+        </el-button>
+    </div>
+    <div class="banner">
+        <!-- 轮播 -->
+        <div id="demo" class="carousel slide" data-bs-ride="carousel">
+
+            <!-- 指示符 -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+            </div>
+
+            <!-- 轮播图片 -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <a href="myshop.html"><img :src="'/upload/'+formData3.frotationImg" class="d-block"
+                                               style="width:100%"></a>
+                </div>
+                <div class="carousel-item">
+                    <a href="myshop.html"><img :src="'/upload/'+formData3.srotationImg" class="d-block"
+                                               style="width:100%"></a>
+                </div>
+                <div class="carousel-item">
+                    <a href="myshop.html"><img :src="'/upload/'+formData3.trotationImg" class="d-block"
+                                               style="width:100%"></a>
+                </div>
+            </div>
+
+            <!-- 左右切换按钮 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+    <h3 style="margin-left: 100px;font-size: 20px;font-weight: bold;margin-top: 50px;">全部商品</h3>
+    <div class="product">
+        <form v-for="form in dataList" @click="productdetailClick(form.id)">
+            <img :src="'/upload/'+form.pimg">
+            <p>{{form.ptitle}}</p>
+            <p style="color: #808080;"><span style="font-size: 12px;color: #808080;">已售</span>{{form.psale}}<span
+                    style="font-size: 12px;
+            color:#808080;">件</span></p>
+            <p style="color: #cf0a2c;font-size: 16px"><span>￥</span>{{form.pprice}}</p>
+        </form>
+        <div class="pagination-container">
+            <el-pagination
+                    class="pagiantion"
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.currentPage"
+                    :page-size="pagination.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="pagination.total">
+            </el-pagination>
+        </div>
+
+    </div>
+    <el-dialog
+            title="商品详情"
+            :visible.sync="dialogFormVisible">
+        <form :model="formData" class="detail">
+            <div class="detail-left">
+                <img :src="detailImgUrl">
+            </div>
+            <div class="detail-right">
+                <p class="title">{{formData.ptitle}}</p>
+                <p style="color: red;font-size: 22px;"><span style="color: #000000;font-size: 14px;">逛逛价：</span><span>￥</span>{{formData.pprice}}</p>
+                <p><span>商品类别：</span>{{formData.ptype}}</p>
+                <p><span>库存：</span>{{formData.pnumber}}</p>
+                <p><span>销量：</span>{{formData.psale}}</p>
+                <p><span>上市时间：</span>{{formData.createTime}}</p>
+            </div>
+
+        </form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible= false">关闭</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            pagination: {//分页相关模型数据
+                currentPage: 1,//当前页码
+                pageSize: 8,//每页显示的记录数
+                total: 0,//总记录数
+                queryString: null//查询条件
+            },
+            formData2: {},
+            formData3: {},
+            dataList: [],//当前页要展示的分页列表数据
+            formData: {},//表单数据
+            dialogFormVisible: false,
+            imgUrl: null,
+            detailImgUrl: null
+
+        },
+        created() {
+            this.findShopById();
+            this.findBusinessInfo();
+            this.findRotation();
+            this.findPage();
+        },
+        methods: {
+            findShopById() {
+                axios.get("/business/findShopById").then((res) => {
+                    if (res.data.flag) {
+                        this.formData = res.data.data;
+                        this.imgUrl = '/upload/' + this.formData.shopLogo;
+                    } else {
+                        this.$message.error("查询失败")
+                    }
+                })
+            },
+            findBusinessInfo() {
+                axios.post("/business/findBusinessById").then((res) => {
+                    this.formData2 = res.data.data;
+                });
+            },
+            findRotation() {
+                axios.get("/business/findRotationById").then((res) => {
+                    if (res.data.flag) {
+                        this.formData3 = res.data.data;
+                    }
+                })
+            },
+            findPage() {
+                var param = {
+                    currentPage: this.pagination.currentPage,
+                    pageSize: this.pagination.pageSize,
+                    queryString: this.pagination.queryString
+                };
+
+                //发送ajax请求，进行分页查询
+                axios.post("/business/findPage", param).then((res) => {
+                    this.pagination.total = res.data.total;
+                    this.dataList = res.data.rows;
+                    this.imgUrl = '/upload/' + this.dataList.pimg;
+                });
+            },
+            //切换页码
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
+            },
+            productdetailClick(id) {
+                axios.get("/user/productdetail/" + id).then((res) => {
+                    this.formData = res.data.data;
+                    this.detailImgUrl = '/upload/' + this.formData.pimg;
+                    this.dialogFormVisible = true;
+                });
+            }
+        }
+    })
+</script>
+</html>

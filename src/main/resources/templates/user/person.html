@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .main {
+            width: 500px;
+            height: 620px;
+            display: block;
+            background-color: #ffffff;
+            border: 2px solid #f5f7fa;
+            border-radius: 10px;
+            border-spacing: inherit;
+            margin-left: 500px;
+        }
+
+        .main input {
+            width: 300px;
+        }
+
+        .main button {
+            margin-left: 110px;
+            margin-top: 40px;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 135px;
+            height: 135px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 135px;
+            height: 135px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="main">
+        <el-form :model="formData" status-icon ref="formData" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="头像" style="margin-top: 30px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imgUrl" :src="imgUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+
+            </el-form-item>
+            <el-form-item label="用户名">
+                <el-input type="text" v-model="formData.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码">
+                <el-input type="password" v-model="formData.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+                <el-input type="text" v-model="formData.email" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="账户余额">
+                <el-input type="number" v-model="formData.money" autocomplete="off" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="收货地址">
+                <el-input type="text" v-model="formData.detailAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话号码">
+                <el-input type="text" v-model="formData.phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="收件人姓名">
+                <el-input type="text" v-model="formData.receiveName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleEdit()" style="margin-top: 0px;">修改</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    new Vue({
+        el: "#app",
+        data: {
+            formData: {},
+            imgUrl: "",
+
+        },
+        created() {
+            this.findBusinessInfo();
+        },
+        methods: {
+            findBusinessInfo() {
+                axios.post("/user/findUserById").then((res) => {
+                    this.formData = res.data.data;
+                    this.imgUrl = '/upload/' + this.formData.userImg;
+                });
+            },
+            handleEdit() {
+                this.$refs['formData'].validate((valid) => {
+                    if (valid) {
+                        axios.post("/user/editPersonInfo", this.formData).then((res) => {
+                            if (res.data.flag) {
+                                //处理成功
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.message
+                                });
+                                //弹出确认框
+                                this.$confirm('用户数据已修改，请退出重新登录', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    //发送ajax请求，将id提交到Controller
+                                    axios.post("/user/logout");
+                                })
+                            } else {
+                                //处理失败
+                                this.$message.error(res.data.message);
+                            }
+                        });
+                    } else {
+                        this.$message.error("表单数据校验失败，请检查输入是否正确！");
+                    }
+                })
+            },
+
+            handleAvatarSuccess(res, file) {
+                this.$message({
+                    type: res.flag ? "success" : "error",
+                    message: res.message
+                });
+                this.imgUrl = '/upload/' + res.data;
+                this.formData.userImg = res.data;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+
+        }
+    })
+</script>
+</html>

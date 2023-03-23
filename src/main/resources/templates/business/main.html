@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>商家中心</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .el-header {
+            background-color: #ffffff;
+            color: #333;
+            border: 2px solid #f0f2f5;
+            display: block;
+            text-align: center;
+        }
+
+        .el-header a {
+            margin-right: 25px;
+            margin-top: 25px;
+            float: right;
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+        .el-header a:hover{
+            color: #ff8204;
+        }
+
+        .el-header-right img {
+            width: 50px;
+            height: 50px;
+            margin-left: 1100px;
+            float: left;
+            margin-top: 7px;
+            border-radius: 30px;
+        }
+
+        .el-aside {
+            background-color: #edeeef;
+            color: #333;
+            text-align: center;
+            margin-top: 0px;
+        }
+        .el-aside a{
+            text-decoration: none;
+        }
+
+        .el-main {
+            background-color: white;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+        .el-menu-item a {
+            display: block;
+            color: #303133;
+            text-decoration: none;
+            text-align: center;
+            width: 210px;
+            margin-left: -20px;
+        }
+        .menu{
+            margin-top: 42px;
+        }
+
+        .el-menu-item a:hover, .el-menu-item.is-active a {
+            color: #fff;
+            background: #00a1d7;
+            text-decoration: none;
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+    <el-container style="height: 700px; border: 1px solid #eee">
+            <el-aside width="200px">
+                <a href="/user/index"><h3 style="margin-top: 25px; margin-left:20px;width: 150px;height: 25px;color: #1899ff;font-size: 17px;">GUANGGUANG</h3></a>
+               <div class="menu">
+                   <el-menu
+                           default-active="2"
+                           class="el-menu-vertical-demo"
+                           background-color="#edeeef"
+                           text-color="#000000"
+                           active-text-color="#0abdfe"
+                   >
+                       <el-submenu v-for="menu in menuList" :index="menu.path" style="margin-left: -30px;">
+                           <template slot="title">
+                               <i class="fa" :class="menu.icon" style="margin-left: -20px;"></i>
+                               {{menu.title}}
+                           </template>
+                           <template v-for="child in menu.children">
+                               <el-menu-item :index="child.path">
+                                   <a :href="child.linkUrl" target="right">{{child.title}}</a>
+                               </el-menu-item>
+                           </template>
+                       </el-submenu>
+                   </el-menu>
+
+               </div>
+            </el-aside>
+        <el-container>
+        <el-header style="height: 70px;">
+<!--            <span th:text="${session.business.getUsername()}" style="margin-left: 770px;line-height: 60px;font-size: 15px;font-weight: normal"></span>-->
+            <div class="el-header-right">
+                <img th:src="${'/upload/'+session.business.getUserImg()}">
+            </div>
+            <a th:href="@{/business/logout}">退出系统</a>
+        </el-header>
+
+            <el-container>
+                <iframe name="right" class="el-main" src="person.html" width="100%" height="580px" frameborder="0"></iframe>
+            </el-container>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script type="text/javascript">
+    new Vue({
+        el: "#app",
+        data: {
+            username: null,
+            menuList: [
+                {
+                    "path": "1",
+                    "title": "商家中心",
+                    "icon": "el-icon-s-custom",
+                    "children": [
+                        {
+                            "path": "/1-1",
+                            "title": "个人信息",
+                            "linkUrl": "person.html",
+                            "children": []
+                        },
+                    ]
+                },
+                {
+                    "path": "2",
+                    "title": "商品管理",
+                    "icon": "el-icon-s-shop",
+                    "children": [
+                        {
+                            "path": "/2-1",
+                            "title": "商品列表",
+                            "linkUrl": "list.html",
+                            "children": []
+                        },
+                        {
+                            "path": "/2-2",
+                            "title": "发布商品",
+                            "linkUrl": "add.html",
+                            "children": []
+                        },
+                    ]
+                },
+                {
+                    "path": "3",
+                    "title": "交易管理",
+                    "icon": "el-icon-edit-outline",
+                    "children": [
+                        {
+                            "path": "/3-1",
+                            "title": "用户订单",
+                            "linkUrl": "order.html",
+                            "children": []
+                        }
+
+                    ]
+                },
+                {
+                    "path": "4",
+                    "title": "店铺管理",
+                    "icon": "el-icon-suitcase",
+                    "children": [
+                        {
+                            "path": "/4-1",
+                            "title": "我的店铺",
+                            "linkUrl": "myshop.html",
+                            "children": []
+                        },
+                        {
+                            "path": "/4-2",
+                            "title": "店铺装修",
+                            "linkUrl": "shopdesign.html",
+                            "children": []
+                        },
+                        {
+                            "path": "/4-3",
+                            "title": "店铺设置",
+                            "linkUrl": "shopsettings.html",
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "path": "5",
+                    "title": "客户管理",
+                    "icon": "el-icon-headset",
+                    "children": [
+                        {
+                            "path": "/5-1",
+                            "title": "退款处理",
+                            "linkUrl": "return.html",
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "path": "6",
+                    "title": "统计分析",
+                    "icon": "el-icon-mobile",
+                    "children": [
+                        {
+                            "path": "/6-1",
+                            "title": "数据分析",
+                            "linkUrl": "productanalysis.html",
+                            "children": []
+                        }
+                    ]
+                },
+
+            ]
+        }
+    })
+</script>
+</html>

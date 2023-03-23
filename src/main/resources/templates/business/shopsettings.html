@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .shopsetting-main {
+            width: 800px;
+            height: 800px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        .el-form-item input{
+            width: 472px;
+        }
+        .el-form-item button{
+            margin-left: 180px;
+            margin-top: 10px;
+        }
+        textarea{
+            resize: none;
+            width: 472px;
+            height: 152px;
+            max-width: 472px;
+            max-height: 152px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="shopsetting-main">
+        <el-form :model="formData" status-icon :rules="rules"  ref="formData" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="店铺名称" prop="shopName">
+                <el-input type="text" v-model="formData.shopName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="店铺标识" style="margin-top: 30px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imgUrl" :src="imgUrl" class="avatar" style="width: 80px;height: 80px;" >
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="店铺简介" prop="shopIntroduce">
+                <el-input type="textarea" v-model="formData.shopIntroduce" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="经营地址" prop="shopAddress">
+                <el-input type="text" v-model="formData.shopAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="店铺介绍" prop="shopDescription">
+                <el-input type="textarea" v-model="formData.shopDescription" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="editShopSettings()">保存</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            formData:{},
+            imgUrl:null,
+            rules: {//校验规则
+                shopIntroduce: [{ required: true, message: '店铺简介不能为空', trigger: 'blur' }],
+                shopName: [{ min:5,max:10, message: '店铺名称在5-10个字符', trigger: 'blur' }],
+                shopDescription: [{ required: true, message: '店铺介绍不能为空', trigger: 'blur' }],
+                shopAddress: [{ required: true, message: '店铺地址不能为空', trigger: 'blur' }],
+            }
+        },
+        created() {
+            this.findShopById();
+        }
+        , methods: {
+            handleAvatarSuccess(res, file) {
+                this.$message({
+                    type:res.flag?"success":"error",
+                    message:res.message
+                });
+                this.imgUrl='/upload/'+res.data;
+                this.formData.shopLogo=res.data;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            findShopById(){
+                axios.get("/business/findShopById").then((res)=>{
+                    if(res.data.flag){
+                        this.formData=res.data.data;
+                        this.imgUrl='/upload/'+this.formData.shopLogo;
+                    }
+                    else {
+                        this.$message.error("查询失败")
+                    }
+                })
+            },
+            editShopSettings(){
+                this.$refs['formData'].validate((valid)=>{
+                    if(valid){
+                        axios.post("/business/editShopSetting",this.formData).then((res)=>{
+                            if(res.data.flag){
+                                this.$message({
+                                    type: 'success',
+                                    message:res.data.message
+                                })
+                                this.findShopById();
+                            }else {
+                                this.$message.error(res.data.message)
+                            }
+                        })
+                    }
+                })
+            }
+        }
+
+    })
+</script>
+</html>

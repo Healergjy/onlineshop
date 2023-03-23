@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        body{
+            background-color:#ffffff;
+        }
+        .main {
+            width: 800px;
+            height: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            display: block;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 135px;
+            height: 135px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .el-form-item button{
+            margin-left: 225px;
+            margin-top: 25px;
+        }
+        .el-form-item input{
+            width: 500px;
+        }
+        .avatar {
+            width: 150px;
+            height: 150px;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="main">
+        <div class="form">
+            <el-form :model="formData" status-icon :rules="rules"  ref="formData" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="商品标题" prop="ptitle">
+                    <el-input type="text" v-model="formData.ptitle" autocomplete="off" placeholder="不超过200字符"></el-input>
+                </el-form-item>
+                <el-form-item label="商品类别" prop="ptype">
+                    <el-select v-model="formData.ptype" placeholder="请选择商品类别">
+                        <el-option label="男装女装" value="男装女装"></el-option>
+                        <el-option label="手机数码" value="手机数码"></el-option>
+                        <el-option lable="鞋包配饰" value="鞋包配饰"></el-option>
+                        <el-option lable="运动户外" value="运动户外"></el-option>
+                        <el-option lable="食品保健" value="食品保健"></el-option>
+                        <el-option lable="日用百货" value="日用百货"></el-option>
+                        <el-option lable="图书文具" value="图书文具"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="商品图片" style="margin-top: 30px;">
+                    <el-upload
+                            class="avatar-uploader"
+                            action="/upload"
+                            name="file"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="imgUrl" :src="imgUrl" class="avatar" style="width:150px;height: 150px;" >
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+
+                </el-form-item>
+                <el-form-item label="商品库存" prop="pnumber">
+                    <el-input type="number" v-model="formData.pnumber" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="商品价格" prop="pprice">
+                    <el-input type="number" v-model="formData.pprice" autocomplete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="addGoods()">发布商品</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            formData:{},
+            imgUrl:"",
+            rules: {//校验规则
+                ptitle: [{ required: true, message: '商品标题不能为空', trigger: 'blur' }],
+                ptype: [{ required: true, message: '商品类型不能为空', trigger: 'blur' }],
+                pnumber: [{ required: true, message: '商品库存不能为空', trigger: 'blur' }],
+                pprice: [{ required: true, message: '商品价格不能为空', trigger: 'blur' }],
+            }
+        },
+        created() {
+            this.resetForm();
+        },
+        methods: {
+            resetForm(){
+                this.formData={};
+            },
+            addGoods(){
+                this.$refs['formData'].validate((valid)=>{
+                    if(valid){
+                        axios.post("/business/addProduct",this.formData).then((res)=>{
+                            if(res.data.flag){
+                                this.$message({
+                                    type:'success',
+                                    message:res.data.message
+                                })
+                                this.resetForm();
+                                this.imgUrl="";
+                            }
+                        })
+
+                    }else {
+                        this.$message({
+                            type:'error',
+                            message:'表单数据校验失败，请检查输入是否正确'
+                        })
+                    }
+                })
+            },
+            handleAvatarSuccess(res, file) {
+                this.$message({
+                    type:res.flag?"success":"error",
+                    message:res.message
+                });
+                this.imgUrl='/upload/'+res.data;
+                this.formData.pimg=res.data;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+        }
+
+    })
+</script>
+
+</html>

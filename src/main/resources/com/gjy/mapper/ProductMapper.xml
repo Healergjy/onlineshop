@@ -1,0 +1,62 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gjy.mapper.ProductMapper">
+    <select id="addProduct" parameterType="Product">
+       insert into product(pprice, pimg, business_id, pnumber, ptitle, ptype)
+       values(#{pprice},#{pimg},#{businessId},#{pnumber},#{ptitle},#{ptype})
+   </select>
+    <select id="findByCondition" resultType="Product" parameterType="map">
+        select * from product where business_id=#{businessId}
+        <if test="value!=null">
+            and ptitle like CONCAT('%',#{value},'%')
+        </if>
+        order by pprice desc
+    </select>
+    <select id="findAll" resultType="Product" parameterType="map">
+        select * from product
+        <if test="value!=null">
+            where ptitle like CONCAT('%',#{value},'%')
+        </if>
+    </select>
+    <select id="findByType" resultType="Product" parameterType="String">
+        select * from product where ptype=#{type}
+    </select>
+    <select id="findProductById" parameterType="int" resultType="Product">
+        select * from product where id=#{id}
+    </select>
+    <select id="findById" resultType="Product" parameterType="int">
+        select * from product where id=#{id}
+    </select>
+    <update id="editProduct" parameterType="Product">
+        update product
+        <set>
+            <if test="ptitle!=null">
+                ptitle=#{ptitle},
+            </if>
+            <if test="ptype!=null">
+                ptype=#{ptype},
+            </if>
+            <if test="pimg!=null">
+                pimg=#{pimg},
+            </if>
+            <if test="pnumber!=null">
+                pnumber=#{pnumber},
+            </if>
+            <if test="pprice!=null">
+                pprice=#{pprice},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <delete id="deleteProduct" parameterType="int">
+        delete from product where id=#{id}
+    </delete>
+    <update id="editNumberAndSale" parameterType="String">
+        update product set pnumber=pnumber-1,psale=psale+1 where pimg=#{pimg}
+    </update>
+</mapper>

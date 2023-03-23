@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .main {
+            width: 800px;
+            height: 520px;
+            margin-top: -30px;
+            margin-left: 260px;
+            border-radius: 15px;
+            background-color: #ffffff;
+        }
+        .main button{
+            margin-left: 190px;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 450px;
+            height: 160px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 450px;
+            height: 160px;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="main">
+        <el-form :model="formData" status-icon ref="formData" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="轮播图一" style="margin-top: 30px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imgUrl" :src="imgUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="轮播图二" style="margin-top: 30px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess2"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imgUrl2" :src="imgUrl2" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="轮播图三" style="margin-top: 30px;">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/upload"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess3"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imgUrl3" :src="imgUrl3" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleEdit()">保存</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            formData: {},
+            imgUrl: "",
+            imgUrl2: "",
+            imgUrl3: ""
+
+        },
+        created() {
+            this.findRotation();
+        },
+        methods: {
+            handleAvatarSuccess(res, file) {
+                this.$message({
+                    type: res.flag ? "success" : "error",
+                    message: res.message
+                });
+                this.imgUrl = '/upload/' + res.data;
+                this.formData.frotationImg = res.data;
+            },
+            handleAvatarSuccess2(res, file) {
+                this.$message({
+                    type: res.flag ? "success" : "error",
+                    message: res.message
+                });
+                this.imgUrl2 = '/upload/' + res.data;
+                this.formData.srotationImg = res.data;
+            },
+            handleAvatarSuccess3(res, file) {
+                this.$message({
+                    type: res.flag ? "success" : "error",
+                    message: res.message
+                });
+                this.imgUrl3 = '/upload/' + res.data;
+                this.formData.trotationImg = res.data;
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            handleEdit() {
+                axios.post("/business/editRotationById",this.formData).then((res)=>{
+                    if(res.data.flag){
+                        this.$message({
+                            type:'success',
+                            message:res.data.message
+                        })
+                        this.findRotation();
+                    }else {
+                        this.$message.error(res.data.message);
+                    }
+                })
+            },
+            findRotation() {
+                axios.get("/business/findRotationById").then((res) => {
+                    if (res.data.flag) {
+                        this.formData = res.data.data;
+                        this.imgUrl = '/upload/'+this.formData.frotationImg;
+                        this.imgUrl2 = '/upload/'+this.formData.srotationImg;
+                        this.imgUrl3 = '/upload/'+this.formData.trotationImg;
+                    }
+                })
+            }
+
+        }
+    })
+</script>
+</html>

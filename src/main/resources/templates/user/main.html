@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商城首页</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <style>
+        .el-header {
+            background-color: #000000;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-footer {
+            background-color: #f1f1f1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-main {
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            text-align: center;
+            line-height: 1500px;
+        }
+
+
+        .menu {
+            height: 50px;
+            width: 600px;
+            margin-left: 800px;
+            float: left;
+        }
+        .menu img{
+            width: 50px;
+            height: 50px;
+            float: left;
+            margin-top: -17px;
+            margin-left: 20px;
+            border-radius: 30px;
+        }
+
+        .el-footer ul {
+            margin-left: 350px;
+        }
+
+        .el-footer li {
+            list-style: none;
+            float: left;
+            margin-left: 50px;
+            line-height: 30px;
+        }
+        .el-footer li:hover{
+            color: #e03d40;
+        }
+
+        .el-menu--horizontal > .el-menu-item {
+            float: left;
+            height: 40px;
+            line-height: 50px;
+            margin-left: 10px;
+            border-bottom: 2px solid transparent;
+            color: #909399;
+        }
+
+        .el-menu {
+            margin-top: 8px;
+        }
+
+        .menu ul {
+            color: #ffffff;
+        }
+
+        .menu li {
+            list-style: none;
+            float: left;
+            margin-left: 30px;
+            line-height: 12px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            font-size: 13px;
+            color: #999999;
+        }
+
+        .menu a:hover {
+            color: #ffffff;
+        }
+
+        .main {
+            display: flex;
+            width: 1500px;
+            height: 70px;
+            margin-left: -20px;
+            padding: 0;
+            top: 0px;
+            background-color: #ffffff;
+        }
+
+        .main a {
+            list-style: none;
+            text-decoration: none;
+            margin-left: 15px;
+            font-size: 17px;
+        }
+
+        .logo {
+            width: 300px;
+            height: 50px;
+            background-color: #ffffff;
+        }
+
+        .logo img {
+            width: 100px;
+            height: 50px;
+            float: left;
+            margin-left: 100px;
+            margin-top: 5px;
+        }
+
+        .header {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header style="height: 120px;">
+            <div class="header">
+                <div class="menu">
+                    <ul>
+                        <li><a href="/toBusiness">商家中心</a></li>
+                        <li th:if="${session.user.getUsername()==null}"><a href="/user/login.html" target="down">登录</a></li>
+                        <li th:if="${session.user.getUsername()==null}"><a href="/user/login.html" target="down">注册</a></li>
+                        <li><a href="/user/order.html" target="down">我的订单</a></li>
+                        <li><a href="/user/shopcar.html" target="down">购物车</a></li>
+                        <li th:if="${session.user.getUsername()!=null}"><a href="/user/logout">注销登录</a></li>
+                        <li th:if="${session.user.getUsername()!=null}">
+                           <a href="/user/person.html" target="down"> <img th:src="${'/upload/'+session.user.getUserImg()}" title="个人中心"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="main">
+                <div class="logo">
+                    <a href="/user/index"><img src="/img/logo.jpg"></a>
+                </div>
+                <el-menu
+                        :default-active="activeIndex1"
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        text-color="#000000"
+                        background-color="#ffffff"
+                >
+                    <el-menu-item index="1"><a href="/user/index.html" target="down">首页</a></el-menu-item>
+                    <el-menu-item index="2"><a href="/user/clothes.html" target="down">男装女装</a></el-menu-item>
+                    <el-menu-item index="3"><a href="/user/shoebag.html" target="down">鞋包配饰</a></el-menu-item>
+                    <el-menu-item index="4"><a href="/user/sport.html" target="down">运动户外</a></el-menu-item>
+                    <el-menu-item index="5"><a href="/user/phone.html" target="down">手机数码</a></el-menu-item>
+                    <el-menu-item index="6"><a href="/user/goods.html" target="down">食品保健</a></el-menu-item>
+                    <el-menu-item index="7"><a href="/user/daily.html" target="down">日用百货</a></el-menu-item>
+                    <el-menu-item index="8"><a href="/user/book.html" target="down">图书文具</a></el-menu-item>
+                </el-menu>
+            </div>
+        </el-header>
+        <el-container>
+            <iframe name="down" src="/user/index.html" width="100%" height="900px"
+                    frameborder="0"></iframe>
+        </el-container>
+        </el-header>
+        <el-footer>
+            <ul>
+                <li>逛逛商城</li>
+                <li>关于我们</li>
+                <li>为你推荐</li>
+                <li>版权相关</li>
+                <li>官方blog</li>
+                <li>逛逛招商</li>
+            </ul>
+        </el-footer>
+    </el-container>
+
+</div>
+
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            activeIndex1: '1',
+            username: null,
+        },
+        methods: {}
+    })
+</script>
+</html>

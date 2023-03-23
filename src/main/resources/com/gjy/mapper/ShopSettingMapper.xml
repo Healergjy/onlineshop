@@ -1,0 +1,30 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gjy.mapper.ShopSettingMapper">
+    <select id="findShopById" parameterType="int" resultType="ShopSetting">
+     select * from shop_setting where business_id=#{id}
+    </select>
+    <update id="editShopSetting" parameterType="ShopSetting">
+        update shop_setting
+        <set>
+            <if test="shopName!=null">
+                shop_name=#{shopName},
+            </if>
+            <if test="shopLogo!=null">
+                shop_logo=#{shopLogo},
+            </if>
+            <if test="shopIntroduce!=null">
+                shop_introduce=#{shopIntroduce},
+            </if>
+            <if test="shopAddress!=null">
+                shop_address=#{shopAddress},
+            </if>
+            <if test="shopDescription!=null">
+                shop_description=#{shopDescription}
+            </if>
+        </set>
+        where business_id=#{businessId}
+    </update>
+</mapper>

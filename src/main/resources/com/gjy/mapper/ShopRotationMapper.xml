@@ -1,0 +1,24 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gjy.mapper.ShopRotationMapper">
+    <select id="findRotaionById" parameterType="int" resultType="ShopRotation">
+        select * from shop_rotation where business_id=#{id};
+    </select>
+    <update id="editRotationById" parameterType="int">
+        update shop_rotation
+        <set>
+            <if test="frotationImg!=null">
+                frotation_img=#{frotationImg},
+            </if>
+            <if test="srotationImg!=null">
+                srotation_img=#{srotationImg},
+            </if>
+            <if test="trotationImg!=null">
+                trotation_img=#{trotationImg}
+            </if>
+            where business_id=#{businessId}
+        </set>
+    </update>
+</mapper>

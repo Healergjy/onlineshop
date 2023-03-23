@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- import Vue before Element -->
+    <script src="/js/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/index.js"></script>
+    <!--引入axios-->
+    <script src="/js/axios.min.js"></script>
+    <!-- 引入bootstrap-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .banner {
+            margin-top: 0px;
+            background-color: #ffffff;
+        }
+
+        .banner img {
+            background-color: #ffffff;
+            height: 500px;
+        }
+
+        .product {
+            width: 1400px;
+            height: 600px;
+            margin-top: 90px;
+            margin-left: 50px;
+            background-color: #f7fafc;
+        }
+
+        .product form {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            float: left;
+            width: 225px;
+            height: 245px;
+            margin-left: 40px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #ffffff;
+            border-radius: 7px;
+            background-color: #ffffff;
+        }
+
+        .product form:hover {
+            border-color: #ff5c00;
+        }
+
+        .product form img {
+            width: 150px;
+            height: 150px;
+            margin-left: 35px;
+            margin-top: 10px;
+            background-color: #ffffff;
+        }
+
+        .product p {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+            word-break: break-all;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #1a1a1a;
+            background-color: #ffffff;
+        }
+
+        .product span {
+            color: #cf0a2c;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .el-pagination {
+            float: left;
+            margin-top: 100px;
+            margin-left: 350px;
+
+        }
+
+        .el-pagination button, .el-pagination span:not([class*=suffix]) {
+            display: inline-block;
+            min-width: 35.5px;
+            height: 28px;
+            line-height: 28px;
+            vertical-align: top;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            color: black;
+            font-size: 14px;
+        }
+
+        .el-form {
+            width: 200px;
+            height: 500px;
+        }
+
+        .detail {
+            display: flex;
+        }
+
+        .detail-left {
+            float: left;
+        }
+
+        .detail-left img {
+            width: 325px;
+            height: 325px;
+        }
+
+        .detail-right {
+            float: left;
+            margin-left: 20px;
+        }
+
+        .title {
+            font-size: 18px;
+            color: #000000;
+        }
+
+        .detail-right p {
+            color: #000000;
+            font-size: 16px;
+        }
+
+        .search {
+            width: 450px;
+            float: left;
+            margin-left: 600px;
+            padding-top: 23px;
+        }
+
+        .search input {
+            width: 300px;
+            height: 40px;
+            float: left;
+            border-radius: 5px;
+            border: 1px solid #409eff;
+        }
+
+        .search button {
+            float: left;
+            margin-left: 5px;
+        }
+
+        .search input:focus {
+            outline: #409eff;
+            caret-color: #8c939d;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="banner">
+        <!-- 轮播 -->
+        <div id="demo" class="carousel slide" data-bs-ride="carousel">
+
+            <!-- 指示符 -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+            </div>
+
+            <!-- 轮播图片 -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://res.vmallres.com/uomcdn/CN/cms/202112/213B6329B830FF334AD95FD6B6956BF0.png.webp" class="d-block"
+                         style="width:100%">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F017d5b5b84a9b1a8012190f2ed83b4.jpg%401280w_1l_2o_100sh.jpg&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1643988852&t=6f9e589a6431eb38d4c89d25fe6e59e8" class="d-block"
+                         style="width:100%">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://res.vmallres.com/uomcdn/CN/cms/202201/B3DFB924A9D9984A1B4EA03E5DBD5ECD.jpg.webp" class="d-block"
+                         style="width:100%">
+                </div>
+            </div>
+
+            <!-- 左右切换按钮 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="search">
+        <input placeholder="请输入商品名称" v-model="pagination.queryString">
+        <el-button type="primary" icon="el-icon-search" @click="findPage()"></el-button>
+    </div>
+    <div class="product">
+        <h3 style="margin-left: 45px;font-size: 23px;padding-top: 15px;" v-if="pagination.queryString==''">为你推荐</h3>
+        <h3 style="margin-left: 45px;font-size: 23px;padding-top: 15px;" v-else>搜索结果</h3>
+        <form v-for="form in dataList" @click="productdetailClick(form.id)">
+            <img :src="'/upload/'+form.pimg">
+            <p>{{form.ptitle}}</p>
+            <p style="color: #808080;"><span style="font-size: 12px;color: #808080;">已售</span>{{form.psale}}<span
+                    style="font-size: 12px;
+            color:#808080;">件</span></p>
+            <p style="color: #cf0a2c;font-size: 16px"><span>￥</span>{{form.pprice}}</p>
+        </form>
+        <div class="pagination-container">
+            <el-pagination
+                    class="pagiantion"
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.currentPage"
+                    :page-size="pagination.pageSize"
+                    layout="total, prev, pager, next, jumper"
+                    :total="pagination.total">
+            </el-pagination>
+        </div>
+
+    </div>
+    <el-dialog
+            title="商品详情"
+            :visible.sync="dialogFormVisible">
+        <form :model="formData" class="detail">
+            <div class="detail-left">
+                <img :src="detailImgUrl">
+            </div>
+            <div class="detail-right">
+                <p class="title">{{formData.ptitle}}</p>
+                <p style="color: red;font-size: 22px;"><span
+                        style="color: #000000;font-size: 14px;">逛逛价：</span><span>￥</span>{{formData.pprice}}</p>
+                <p><span>商品类别：</span>{{formData.ptype}}</p>
+                <p><span>库存：</span>{{formData.pnumber}}</p>
+                <p><span>销量：</span>{{formData.psale}}</p>
+                <p><span>上市时间：</span>{{formData.createTime}}</p>
+                <el-button type="primary" icon="el-icon-shopping-cart-2" @click="addShopCar(formData.id)"
+                           style="background-color:#fc600c;border-color: #fc600c; ">加入购物车
+                </el-button>
+                <el-button type="primary" @click="buyProduct(formData.id)">立即购买</el-button>
+            </div>
+
+        </form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible= false">关闭</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: "#app",
+        data: {
+            dataList: [],
+            pagination: {//分页相关模型数据
+                currentPage: 1,//当前页码
+                pageSize: 10,//每页显示的记录数
+                total: 0,//总记录数
+                queryString: null//查询条件
+            },
+            dialogFormVisible: false,
+            formData: {},
+            imgUrl: null,
+            detailImgUrl: null,
+        },
+        created() {
+            this.findPage();
+        },
+        methods: {
+            findPage() {
+                var param = {
+                    currentPage: this.pagination.currentPage,
+                    pageSize: this.pagination.pageSize,
+                    queryString: this.pagination.queryString
+                };
+                axios.post("/user/findPage", param).then((res) => {
+                    this.pagination.total = res.data.total;
+                    this.dataList = res.data.rows;
+                    this.imgUrl = '/upload/' + this.dataList.pimg;
+                })
+            },
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
+            },
+            productdetailClick(id) {
+                axios.get("/user/productdetail/" + id).then((res) => {
+                    this.formData = res.data.data;
+                    this.detailImgUrl = '/upload/' + this.formData.pimg;
+                    this.dialogFormVisible = true;
+                });
+            }
+            ,
+            addShopCar(id) {
+                axios.post("/user/addShopCar/"+id).then((res)=>{
+                  if(res.data.flag){
+                      this.$message({
+                          type:'success',
+                          message:res.data.message
+                      })
+                  }else {
+                      this.$message.error(res.data.message)
+                  }
+                })
+            },
+            buyProduct(id){
+                this.dialogFormVisible=false;
+                axios.post("/user/buyProduct/"+id).then((res)=>{
+                    if(res.data.flag){
+                        this.$message.success(res.data.message);
+                    }else {
+                        this.$message.error(res.data.message);
+                    }
+                })
+            }
+        }
+    })
+</script>
+</html>
